@@ -12,6 +12,8 @@ var (
 
 type Config struct {
 	Port string `json:"PORT"`
+  DB_PATH string `json:"DB"`
+  DB string `json:"DB_Path"`
 }
 
 func ReadConfig() error {

@@ -1,53 +1,37 @@
 <template lang="pug">
   .container
-    br
-    .row
-      .col-sm-3
-        pre {{token}}
-      .col-sm-6
-        h1 Login
-        .form-group
-          input.form-control(v-model="username")
-        .form-group
-          input.form-control(v-model="password")
-        .form-group
-          .btn.btn-success(@click="login") Enter
-          .btn.btn-primary(@click="show") Show
-      .col-sm-3 {{dd}}
+    Navbar
+    .row.mt-3
+      .offset-md-2.offset-sm-0
+      .col-md-8.col-sm-12
+        transition(enter-active-class="animated bouncelnDown")
+          router-view
+      .offset-md-2.offset-sm-0
 </template>
 
 <script>
-import axios from 'axios'
+import Navbar from './components/Navbar'
 
 export default {
   name: 'App',
   data: () => {
-    return {
-      username: '',
-      password: '',
-      token: '',
-      dd: ''
+    return {}
+  },
+  created () {
+    let token = JSON.parse(localStorage.getItem('token'))
+    let userId = JSON.parse(localStorage.getItem('user_id'))
+    console.log('starting app', token, userId)
+    if (token && userId) {
+      this.$store.dispatch('setToken', token)
+      this.$store.dispatch('setUserId', userId)
+    }
+
+    if (token) {
+      this.$router.push('/notes')
     }
   },
-  methods: {
-    async login () {
-      let result = await axios.post('/api/login', {
-        username: this.username,
-        password: this.password
-      })
-      if (result.data.token) {
-        this.token = result.data.token
-      }
-    },
-    async show () {
-      let result = await axios.get('/api/private', {
-        headers: {
-          'Authorization': 'bearer ' + this.token
-        }
-      })
-      console.log(result.data)
-      this.dd = result.data
-    }
+  components: {
+    Navbar
   }
 }
 </script>

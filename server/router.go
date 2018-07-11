@@ -6,43 +6,73 @@ import (
   "io/ioutil"
   "log"
   "fmt"
-  "time"
 
-	"github.com/gorilla/mux"
-  "github.com/dgrijalva/jwt-go"
-  "github.com/auth0/go-jwt-middleware"
+  "github.com/gorilla/mux"
+  "Notes/server/user"
+  "Notes/server/note"
+  "github.com/globalsign/mgo/bson"
 )
-
-var myHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-  println("worked")
-})
-
-var jwtMiddleware = jwtmiddleware.New(jwtmiddleware.Options{
-  ValidationKeyGetter: func(token *jwt.Token) (interface{}, error) {
-    return []byte("secret"), nil
-  },
-  SigningMethod: jwt.SigningMethodHS256,
-})
 
 func initRoutes(r *mux.Router) {
   r.HandleFunc("/login", Login).Methods("POST")
-	r.HandleFunc("/", Test).Methods("GET")
 
 	// private handle
+  r.Handle("/createNote", jwtMiddleware.Handler(http.HandlerFunc(CreateNote))).Methods("POST")
   r.Handle("/private", jwtMiddleware.Handler(http.HandlerFunc(Private))).Methods("GET")
+  r.Handle("/getNotes/{id}", jwtMiddleware.Handler(http.HandlerFunc(GetNotes))).Methods("GET")
 }
 
-func Test(w http.ResponseWriter, r *http.Request) {
+func CreateNote(w http.ResponseWriter, r *http.Request) {
+  body, err := ioutil.ReadAll(r.Body)
 
-	result, err := json.MarshalIndent(map[string]interface{}{
-		"success": true,
-	}, "", "\t")
+  if err != nil {
+    panic(err)
+  }
 
-	if err != nil {
-		panic(err)
-	}
+  var note note.Note
+  note.Collection = col_notes
 
-	w.Write(result)
+  err = json.Unmarshal(body, &note)
+  if err != nil {
+    panic(err)
+  }
+  fmt.Println(note)
+  ok := note.CreateNote()
+
+  result, err := json.MarshalIndent(map[string]interface{}{
+    "ok": ok,
+  }, "", "\t")
+
+  if err != nil {
+    panic(err)
+  }
+
+  w.Write(result)
+}
+
+func GetNotes(w http.ResponseWriter, r *http.Request) {
+  vars := mux.Vars(r)
+  id := vars["id"]
+  note := note.Note{Collection: col_notes}
+  note.User = bson.ObjectIdHex(id)
+  fmt.Println("vars is ", id)
+  fl := true
+  res, err := note.GetAllById(id)
+  if err != nil {
+    fl = false
+  }
+  fmt.Println("result is", res)
+
+  result, err := json.MarshalIndent(map[string]interface{}{
+    "ok": fl,
+    "notes": res,
+  }, "", "\t")
+
+  if err != nil {
+    panic(err)
+  }
+
+  w.Write(result)
 }
 
 func Private(w http.ResponseWriter, r *http.Request) {
@@ -58,34 +88,34 @@ func Private(w http.ResponseWriter, r *http.Request) {
 }
 
 func Login(w http.ResponseWriter, r *http.Request) {
-  println("logining")
 	body, err := ioutil.ReadAll(r.Body)
 
   if err != nil {
     panic(err)
   }
 
-	var user User
+	var user user.User
+	user.Collection = col_users
+
 	err = json.Unmarshal(body, &user)
+  if err != nil {
+    panic(err)
+  }
 	fmt.Println(user)
 
-	if (user.CheckLogin()) {
+	var fl bool
+	if fl, user = user.CheckLogin(); fl {
+	  fmt.Println("login success")
 	  w.WriteHeader(http.StatusOK)
 
-    var mySigningKey = []byte("secret")
-    // create token
-    token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-      "name": "admin",
-      "exp": time.Now().Add(time.Hour * 24).Unix(),
-    })
-    tokenStr, err := token.SignedString(mySigningKey)
-    if err != nil {
-      panic(err)
-    }
+	  tokenStr, err := createToken(user.Username)
+    fmt.Println(tokenStr)
 
     res, err := json.MarshalIndent(map[string]interface{}{
       "success": true,
       "token": tokenStr,
+      "user": user.Username,
+      "user_id": user.Id,
     }, "", "\t")
 
 	  if err != nil {
@@ -102,3 +132,4 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 	log.Println(string(body))
 }
+
