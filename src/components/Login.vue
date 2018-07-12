@@ -23,19 +23,22 @@ export default {
   },
   methods: {
     async login () {
-      let result = await this.$api.login(this.username, this.password)
-      if ('data' in result) {
-        console.log(result)
-        if (result.data.success) {
-          this.$store.dispatch('setToken', result.data.token)
-          this.$store.dispatch('setUserId', result.data.user_id)
+      let self = this
+      let result = await this.$api.send('post', '/login', {
+        username: self.username,
+        password: self.password
+      })
 
-          localStorage.setItem('token', JSON.stringify(result.data.token))
-          localStorage.setItem('user_id', JSON.stringify(result.data.user_id))
+      console.log('status', result)
+      if (result.status) {
+        this.$store.dispatch('setToken', result.data.token)
+        this.$store.dispatch('setUserId', result.data.user_id)
 
-          this.$router.push('/notes')
-          console.log(this.$store.state)
-        }
+        localStorage.setItem('token', JSON.stringify(result.data.token))
+        localStorage.setItem('user_id', JSON.stringify(result.data.user_id))
+
+        this.$router.push('/notes')
+        console.log(this.$store.state)
       }
     }
   }

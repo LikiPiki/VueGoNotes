@@ -8,6 +8,7 @@ import (
 
 	"github.com/gorilla/mux"
   "github.com/globalsign/mgo"
+  "fmt"
 )
 
 var conf config.Config
@@ -41,14 +42,24 @@ func main() {
   col_notes = session.DB("notes").C("notes")
 
   // run web server
-	r := mux.NewRouter()
+	r := mux.NewRouter().StrictSlash(true)
+	//api := r.PathPrefix("/api/").Subrouter()
+	//initRoutes(api)
+  initRoutes(r)
 
-	initRoutes(r)
-
-	// default handler for dev only
-
+  // default handler for dev only
   //http.Handle("/", http.FileServer(http.Dir("../dist")))
+  //r.PathPrefix("/").Handler(http.FileServer(http.Dir("../dist")))
   http.Handle("/", r)
+
+  r.Walk(func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
+    t, err := route.GetPathTemplate()
+    if err != nil {
+      return err
+    }
+    fmt.Println(t)
+    return nil
+  })
 
   println("server listening on port", config.Cnf.Port)
 	err = http.ListenAndServe(config.Cnf.Port, nil)

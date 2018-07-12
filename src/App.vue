@@ -17,10 +17,11 @@ export default {
   data: () => {
     return {}
   },
-  created () {
+  async created () {
     let token = JSON.parse(localStorage.getItem('token'))
     let userId = JSON.parse(localStorage.getItem('user_id'))
     console.log('starting app', token, userId)
+
     if (token && userId) {
       this.$store.dispatch('setToken', token)
       this.$store.dispatch('setUserId', userId)

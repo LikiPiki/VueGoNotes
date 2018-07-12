@@ -1,6 +1,6 @@
 <template lang="pug">
   nav.navbar.navabar-expand-lg.navbar-light.bg-light.mt-4
-    router-link.navbar-brand(to="/" tag="a") Notes
+    router-link.navbar-brand(to="/notes" tag="a") Notes
     .btn-group
       router-link.btn.btn-success(to="/create" tag="div") Create
       .btn.btn-primary(@click="logout" v-if="visible") Logout

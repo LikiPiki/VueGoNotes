@@ -1,5 +1,6 @@
 <template lang="pug">
   .form
+    b-alert(show dismissible) Default Alert
     .form-group
         input.form-control(type="text" v-model="form.title" placeholder="Заголовок")
     .form-group
@@ -18,6 +19,12 @@ export default {
         title: '',
         content: '',
         tags: []
+      },
+      alert: {
+        show: true,
+        type: 'success',
+        time: 3,
+        dismissCountDown: 10
       }
     }
   },
@@ -31,6 +38,13 @@ export default {
       console.log('sending', sending)
       let result = await this.$api.saveNote(sending)
       console.log(result)
+      if (result.ok) {
+        this.alert.type = 'success'
+      } else {
+        this.alert.type = 'danger'
+      }
+      this.alert.dismissCountDown = this.alert.time
+      this.alert.show = true
     },
     clear () {
       this.form.title = ''

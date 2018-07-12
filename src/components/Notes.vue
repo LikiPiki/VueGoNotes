@@ -43,6 +43,8 @@ export default {
     let result = await this.$api.getNotes(id)
     if ('data' in result) {
       this.notes = result.data.notes
+    } else {
+      this.$router.push('/')
     }
     console.log('res is', result)
     this.loading = false

@@ -18,7 +18,6 @@ func initRoutes(r *mux.Router) {
 
 	// private handle
   r.Handle("/createNote", jwtMiddleware.Handler(http.HandlerFunc(CreateNote))).Methods("POST")
-  r.Handle("/private", jwtMiddleware.Handler(http.HandlerFunc(Private))).Methods("GET")
   r.Handle("/getNotes/{id}", jwtMiddleware.Handler(http.HandlerFunc(GetNotes))).Methods("GET")
 }
 
@@ -63,26 +62,7 @@ func GetNotes(w http.ResponseWriter, r *http.Request) {
   }
   fmt.Println("result is", res)
 
-  result, err := json.MarshalIndent(map[string]interface{}{
-    "ok": fl,
-    "notes": res,
-  }, "", "\t")
-
-  if err != nil {
-    panic(err)
-  }
-
-  w.Write(result)
-}
-
-func Private(w http.ResponseWriter, r *http.Request) {
-  result, err := json.MarshalIndent(map[string]interface{}{
-    "success": "this is a private page",
-  }, "", "\t")
-
-  if err != nil {
-    panic(err)
-  }
+  result := getResponse(fl, res)
 
   w.Write(result)
 }
@@ -105,25 +85,23 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 	var fl bool
 	if fl, user = user.CheckLogin(); fl {
-	  fmt.Println("login success")
 	  w.WriteHeader(http.StatusOK)
 
 	  tokenStr, err := createToken(user.Username)
     fmt.Println(tokenStr)
 
-    res, err := json.MarshalIndent(map[string]interface{}{
-      "success": true,
-      "token": tokenStr,
+    res := getResponse(true, map[string]interface{} {
       "user": user.Username,
+      "token": tokenStr,
       "user_id": user.Id,
-    }, "", "\t")
+    })
 
 	  if err != nil {
 	    panic(err)
     }
 	  w.Write(res)
   } else {
-    w.WriteHeader(http.StatusBadRequest)
+    w.Write(getResponse(false, "Error in login"))
   }
 
 	if err != nil {
@@ -131,5 +109,25 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	log.Println(string(body))
+}
+
+func getResponse(status bool, data interface{}) []byte {
+  res, err := json.MarshalIndent(map[string]interface{}{
+    "status": getStatus(status),
+    "data" : data,
+  }, "", "\t")
+
+  if err != nil {
+    panic(err)
+  }
+  return res
+}
+
+func getStatus(ok bool) string {
+  if ok {
+    return "success"
+  } else {
+    return "error"
+  }
 }
 

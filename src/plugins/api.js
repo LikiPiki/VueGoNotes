@@ -6,13 +6,6 @@ const api = '/api'
 Api.install = (Vue, {store}) => {
   Vue.prototype.$api = {
 
-    login (username, password) {
-      return axios.post(api + '/login', {
-        username: username,
-        password: password
-      })
-    },
-
     getNotes (id) {
       return axios.get(api + '/getNotes/' + id, {
         headers: {
@@ -27,6 +20,32 @@ Api.install = (Vue, {store}) => {
           'Authorization': 'bearer ' + store.getters.getToken
         }
       })
+    },
+
+    send: async (type, path, data) => {
+      let token = store.getters.getToken
+      let headers = {
+        'Authorization': 'bearer ' + token
+      }
+
+      let result = {}
+      try {
+        if (data) {
+          result = await axios[type](api + path, data, headers)
+        } else {
+          result = await axios[type](api + path, headers)
+        }
+
+        if (result.data.status !== 'success') {
+          result = {'error': true}
+        } else {
+          console.log('OKKKK!')
+          result = result.data
+        }
+      } catch (err) {
+        result = {'error': true}
+      }
+      return result
     }
 
   }
