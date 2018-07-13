@@ -25,27 +25,44 @@ func (note Note) ValidateNote() (bool, error) {
   return fl, err
 }
 
-func (note *Note) CreateNote() bool {
-  //ok, err := note.ValidateNote()
-  //if err != nil {
-  //  panic(err)
-  //}
-  //if (ok) {
-  note.CreatedDate = time.Now()
+func (note *Note) CreateNote() (bool, error) {
   err := note.Collection.Insert(Note{
     Title: note.Title,
     Content: note.Content,
-    CreatedDate: note.CreatedDate,
+    CreatedDate: time.Now(),
     User: note.User,
   })
   if err != nil {
-    panic(err)
+    return false, err
   }
-  //}
-  return true
+  return true, nil
 }
 
-func (note *Note) GetAllById(id string) ([]Note, error) {
+func (note *Note) UpdateNote() (bool, error) {
+  err := note.Collection.UpdateId(note.Id, note)
+  if err != nil {
+    return false, err
+  }
+  return true, nil
+}
+
+func (note *Note) FindNote() (*Note, error) {
+  err := note.Collection.FindId(note.Id).One(&note)
+  if err != nil {
+    return note, err
+  }
+  return note, nil
+}
+
+func (note *Note) DeleteNote() (bool, error) {
+  err := note.Collection.RemoveId(note.Id)
+  if err != nil {
+    return false, err
+  }
+  return true, nil
+}
+
+func (note *Note) GetAllById() ([]Note, error) {
   notes := make([]Note, 0)
   fmt.Println("note", note.User)
   err := note.Collection.Find(bson.M{"user": note.User}).Limit(100).Sort("-date").All(&notes)

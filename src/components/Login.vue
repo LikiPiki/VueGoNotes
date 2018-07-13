@@ -17,8 +17,7 @@ export default {
     return {
       username: '',
       password: '',
-      token: '',
-      dd: ''
+      token: ''
     }
   },
   methods: {
@@ -30,12 +29,13 @@ export default {
       })
 
       console.log('status', result)
-      if (result.status) {
+      if (result.status === 200) {
+        console.log('res', result)
         this.$store.dispatch('setToken', result.data.token)
-        this.$store.dispatch('setUserId', result.data.user_id)
+        this.$store.dispatch('setUserId', result.data._id)
 
         localStorage.setItem('token', JSON.stringify(result.data.token))
-        localStorage.setItem('user_id', JSON.stringify(result.data.user_id))
+        localStorage.setItem('user_id', JSON.stringify(result.data._id))
 
         this.$router.push('/notes')
         console.log(this.$store.state)

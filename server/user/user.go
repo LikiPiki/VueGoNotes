@@ -41,3 +41,19 @@ func (us User) CheckLogin() (bool, User) {
 
   return false, res
 }
+
+func (us User) CreateUser() (bool, error){
+  err := us.Collection.Insert(us)
+  if err != nil {
+    return false, err
+  }
+  return true, nil
+}
+
+func (us User) UpdateUser() (bool, error) {
+  err := us.Collection.UpdateId(us.Id, us)
+  if err != nil {
+    return false, err
+  }
+  return true, nil
+}

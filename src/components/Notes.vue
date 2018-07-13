@@ -7,7 +7,10 @@
         input.form-control(type="text" v-model="search" placeholder="Поищем?//!?...")
       .row(v-if="filteredNotes.length > 0")
         .col-sm-12
-          b-card.mt-2(v-for="(note, index) in filteredNotes", :title="note.title")
+          b-card.mt-2(
+            v-for="(note, index) in filteredNotes",
+            :header="note.title"
+          )
             p.card-text {{note.content}}
       .row(v-else)
         .content.mx-auto
@@ -38,15 +41,14 @@ export default {
   },
   async mounted () {
     this.loading = true
-    console.log('getter is ', this.$store.getters.getUserId)
     let id = await this.$store.getters.getUserId
-    let result = await this.$api.getNotes(id)
-    if ('data' in result) {
-      this.notes = result.data.notes
+    let result = await this.$api.send('get', '/getNotes/' + id)
+
+    if (result) {
+      this.notes = result.data
     } else {
       this.$router.push('/')
     }
-    console.log('res is', result)
     this.loading = false
   }
 }

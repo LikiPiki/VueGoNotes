@@ -28,43 +28,46 @@ func CreateNote(w http.ResponseWriter, r *http.Request) {
     panic(err)
   }
 
-  var note note.Note
-  note.Collection = col_notes
+  note := note.Note{
+    Collection: col_notes,
+  }
 
   err = json.Unmarshal(body, &note)
   if err != nil {
     panic(err)
   }
-  fmt.Println(note)
-  ok := note.CreateNote()
 
-  result, err := json.MarshalIndent(map[string]interface{}{
-    "ok": ok,
-  }, "", "\t")
+  fmt.Println(note)
+
+  ok, err := note.CreateNote()
 
   if err != nil {
     panic(err)
   }
 
-  w.Write(result)
+  json.NewEncoder(w).Encode(map[string]interface{}{
+    "success": ok,
+  })
+
 }
 
 func GetNotes(w http.ResponseWriter, r *http.Request) {
   vars := mux.Vars(r)
   id := vars["id"]
-  note := note.Note{Collection: col_notes}
-  note.User = bson.ObjectIdHex(id)
-  fmt.Println("vars is ", id)
-  fl := true
-  res, err := note.GetAllById(id)
-  if err != nil {
-    fl = false
+
+  note := note.Note{
+    Collection: col_notes,
   }
+
+  note.User = bson.ObjectIdHex(id)
+  res, err := note.GetAllById()
+  if err != nil {
+    panic(err)
+  }
+
   fmt.Println("result is", res)
 
-  result := getResponse(fl, res)
-
-  w.Write(result)
+  json.NewEncoder(w).Encode(res)
 }
 
 func Login(w http.ResponseWriter, r *http.Request) {
@@ -74,8 +77,9 @@ func Login(w http.ResponseWriter, r *http.Request) {
     panic(err)
   }
 
-	var user user.User
-	user.Collection = col_users
+	user := user.User {
+	  Collection: col_users,
+  }
 
 	err = json.Unmarshal(body, &user)
   if err != nil {
@@ -90,18 +94,21 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	  tokenStr, err := createToken(user.Username)
     fmt.Println(tokenStr)
 
-    res := getResponse(true, map[string]interface{} {
-      "user": user.Username,
-      "token": tokenStr,
-      "user_id": user.Id,
-    })
-
 	  if err != nil {
 	    panic(err)
     }
-	  w.Write(res)
+
+    json.NewEncoder(w).Encode(map[string]interface{}{
+      "status": true,
+      "user": user.Username,
+      "token": tokenStr,
+      "_id": user.Id,
+    })
   } else {
-    w.Write(getResponse(false, "Error in login"))
+    json.NewEncoder(w).Encode(map[string]interface{}{
+      "status": false,
+      "error": "Error in login",
+    })
   }
 
 	if err != nil {
@@ -109,25 +116,5 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	log.Println(string(body))
-}
-
-func getResponse(status bool, data interface{}) []byte {
-  res, err := json.MarshalIndent(map[string]interface{}{
-    "status": getStatus(status),
-    "data" : data,
-  }, "", "\t")
-
-  if err != nil {
-    panic(err)
-  }
-  return res
-}
-
-func getStatus(ok bool) string {
-  if ok {
-    return "success"
-  } else {
-    return "error"
-  }
 }
 
