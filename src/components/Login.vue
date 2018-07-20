@@ -32,10 +32,10 @@ export default {
       if (result.status === 200) {
         console.log('res', result)
         this.$store.dispatch('setToken', result.data.token)
-        this.$store.dispatch('setUserId', result.data._id)
+        this.$store.dispatch('setUserId', result.data.id)
 
         localStorage.setItem('token', JSON.stringify(result.data.token))
-        localStorage.setItem('user_id', JSON.stringify(result.data._id))
+        localStorage.setItem('user_id', JSON.stringify(result.data.id))
 
         this.$router.push('/notes')
         console.log(this.$store.state)
