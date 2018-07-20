@@ -1,70 +1,29 @@
 package main
 
 import (
-	"Notes/server/config"
-
+	db "Notes/server/db"
+	"fmt"
+	"github.com/gorilla/mux"
 	"log"
 	"net/http"
-
-	"fmt"
-	"github.com/globalsign/mgo"
-	"github.com/gorilla/mux"
 )
-
-var conf config.Config
-
-var (
-	col_users *mgo.Collection
-	col_notes *mgo.Collection
-)
-
-func init() {
-	// load config from file
-	err := config.ReadConfig()
-
-	if err != nil {
-		panic(err)
-	}
-
-}
 
 func main() {
+	var err error
 
-	// init mongodb
-	session, err := mgo.Dial("127.0.0.1:27017")
-	if err != nil {
-		panic(err)
-	}
-	defer session.Close()
-	session.SetSafe(&mgo.Safe{})
+	database := db.Connect()
+	defer database.Close()
 
-	col_users = session.DB("notes").C("users")
-	col_notes = session.DB("notes").C("notes")
-
-	// run web server
+	// routes
 	r := mux.NewRouter().StrictSlash(true)
-	//api := r.PathPrefix("/api/").Subrouter()
-	//initRoutes(api)
 	initRoutes(r)
 
-	// default handler for dev only
-	//http.Handle("/", http.FileServer(http.Dir("../dist")))
-	//r.PathPrefix("/").Handler(http.FileServer(http.Dir("../dist")))
 	http.Handle("/", r)
 
-	r.Walk(func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
-		t, err := route.GetPathTemplate()
-		if err != nil {
-			return err
-		}
-		fmt.Println(t)
-		return nil
-	})
-
-	println("server listening on port", config.Cnf.Port)
-	err = http.ListenAndServe(config.Cnf.Port, nil)
-
+	fmt.Println("Listen and Serve on :3000")
+	err = http.ListenAndServe(":3000", nil)
 	if err != nil {
-		log.Println(err)
+		log.Println("Cant run web-server")
 	}
+
 }
