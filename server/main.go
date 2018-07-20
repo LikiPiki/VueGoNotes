@@ -8,6 +8,8 @@ import (
 	"net/http"
 )
 
+type bytes []byte
+
 func main() {
 	var err error
 

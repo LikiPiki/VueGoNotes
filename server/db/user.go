@@ -11,9 +11,11 @@ type User struct {
 }
 type Users []User
 
-func GetAll() (Users, error) {
-	fmt.Println("db is ", DB)
-	rows, err := DB.Query("SELECT id, username, password, is_admin FROM users")
+func (u User) GetAll() (Users, error) {
+
+	rows, err := DB.Query(
+	  "SELECT id, username, password, is_admin FROM users",
+	)
 
 	if err != nil {
 		return nil, err
@@ -41,4 +43,26 @@ func GetAll() (Users, error) {
 	defer rows.Close()
 
 	return users, nil
+}
+
+func (user User) GetUserByUsername(username string) (User, error) {
+  fmt.Println("finding", username)
+  err := DB.QueryRow(
+    "SELECT id, username, password, is_admin FROM users WHERE username = $1",
+    username,
+  ).Scan(
+    &user.Id,
+    &user.Username,
+    &user.Password,
+    &user.IsAdmin,
+  )
+
+  if err != nil {
+    return User{}, err
+  }
+
+  fmt.Println(user)
+
+  return user, nil
+
 }

@@ -3,24 +3,73 @@ package main
 import (
 	"Notes/server/db"
 	"encoding/json"
-	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
+  "io/ioutil"
+  "log"
 )
 
 func initRoutes(r *mux.Router) {
-	r.HandleFunc("/test", Test).Methods("GET")
+  r.HandleFunc("/login", Login).Methods("POST")
 }
 
-func Test(w http.ResponseWriter, r *http.Request) {
-	users, err := db.GetAll()
+func Login(w http.ResponseWriter, r *http.Request) {
+  body, err := ioutil.ReadAll(r.Body)
 
-	if err != nil {
-		fmt.Println("Can not get users")
-	}
+  if err != nil {
+    returnErrStatus(w,"Cant read body")
+    return
+  }
 
-	json.NewEncoder(w).Encode(map[string]interface{}{
-		"users":   users,
-		"success": true,
-	})
+  var user db.User
+  err = json.Unmarshal(body, &user)
+  if err != nil {
+    returnErrStatus(w,"Cant json body")
+    return
+  }
+
+  user, err = db.User{}.GetUserByUsername(user.Username)
+  if err != nil || (user == db.User{}) {
+    log.Println("login err")
+    returnLoginFailed(w)
+    return
+  }
+  var token string
+  token, err = createToken(user.Username)
+  if err != nil {
+    log.Println("create token err")
+    returnLoginFailed(w)
+    return
+  }
+
+  json.NewEncoder(w).Encode(map[string]interface{}{
+    "success": "success",
+    "username": user.Username,
+    "token": token,
+    "id": user.Id,
+  })
+
+}
+
+/*
+ *  Utils
+ */
+
+func returnErrStatus(w http.ResponseWriter, errorString string) {
+  err := json.NewEncoder(w).Encode(map[string]interface{}{
+    "status": "error",
+    "error": errorString,
+  })
+  if err != nil {
+    log.Println("Cant encode error response", err)
+  }
+}
+
+func returnLoginFailed(w http.ResponseWriter) {
+  err := json.NewEncoder(w).Encode(map[string]interface{}{
+    "login": "failed",
+  })
+  if err != nil {
+    log.Println("Cant encode error response", err)
+  }
 }
