@@ -4,8 +4,8 @@ import (
 	"log"
 	"net/http"
 
-	"projects/Notes/server/db"
-	"projects/Notes/server/routes"
+	"Notes/server/db"
+	"Notes/server/routes"
 
 	"github.com/gorilla/mux"
 )

@@ -11,6 +11,7 @@ import (
 // default open routes
 func InitRoutes(r *mux.Router) {
 	r.HandleFunc("/login", Login).Methods("POST")
+	r.HandleFunc("/register", Register).Methods("POST")
 
 	JWTRoutes(r)
 }
@@ -18,8 +19,9 @@ func InitRoutes(r *mux.Router) {
 // JWT private routes
 func JWTRoutes(r *mux.Router) {
 	// notes handlers
-	r.Handle("/getNotes/{id}", jwtMiddleware.Handler(http.HandlerFunc(GetAllNotes))).Methods("GET")
-	r.Handle("/createNote/{id}", jwtMiddleware.Handler(http.HandlerFunc(CreateNote))).Methods("POST")
+	r.Handle("/notes/{id}", jwtMiddleware.Handler(http.HandlerFunc(GetAllNotes))).Methods("GET")
+	r.Handle("/notes/{id}", jwtMiddleware.Handler(http.HandlerFunc(RemoveNote))).Methods("DELETE")
+	r.Handle("/notes", jwtMiddleware.Handler(http.HandlerFunc(CreateNote))).Methods("POST")
 }
 
 /*

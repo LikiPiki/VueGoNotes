@@ -9,7 +9,7 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"projects/Notes/server/db"
+	"Notes/server/db"
 )
 
 func GetAllNotes(w http.ResponseWriter, r *http.Request) {
@@ -39,7 +39,6 @@ func CreateNote(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var note db.Note
-	fmt.Println("note is ", note)
 	err = json.Unmarshal(body, &note)
 	if err != nil {
 		returnErrStatus(w, "Cant json body")
@@ -47,7 +46,29 @@ func CreateNote(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Println("note is ", note)
 
+	var result bool
+	result, err = db.Note{}.Create(note)
+	log.Println("result is, ", err)
+	if err != nil {
+		returnErrStatus(w, "Cant create note")
+	}
+
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"status":  "success",
+		"created": result,
+	})
+}
+
+func RemoveNote(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+	err := db.Note{}.RemoveNote(id)
+	if err != nil {
+		returnErrStatus(w, "Cant delete by id ")
+	}
+
 	json.NewEncoder(w).Encode(map[string]interface{}{
 		"status": "success",
 	})
+
 }

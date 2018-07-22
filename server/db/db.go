@@ -3,7 +3,6 @@ package db
 import (
 	"database/sql"
 	"log"
-	"projects/Notes/server/crypt"
 
 	_ "github.com/lib/pq"
 )
@@ -16,7 +15,7 @@ var (
 func Connect() (db *sql.DB) {
 	var err error
 
-	connStr := "user=admin password='admin' dbname=notes host=localhost sslmode=disable"
+	connStr := "password='postgres' dbname=notes sslmode=disable"
 	DB, err = sql.Open("postgres", connStr)
 
 	if err != nil {
@@ -25,13 +24,17 @@ func Connect() (db *sql.DB) {
 
 	log.Println("Connect to postgress success")
 
-	chechFirstConnect()
+	err = chechFirstConnect()
+
+	if err != nil {
+		panic(err)
+	}
 
 	return DB
 
 }
 
-func chechFirstConnect() {
+func chechFirstConnect() error {
 	var id int
 	err := DB.QueryRow(
 		"SELECT id FROM users WHERE username = $1",
@@ -39,14 +42,19 @@ func chechFirstConnect() {
 	).Scan(&id)
 
 	if id == 0 {
-		pass, _ := crypt.CryptPassword("admin")
-		_, err = DB.Query(
-			"INSERT INTO users (username, password, is_admin) VALUES ($1, $2, $3)",
-			"admin", pass, true,
-		)
-		if err != nil {
-			panic(err)
+
+		newUser := User{
+			Username: "admin",
+			Password: "admin",
+			IsAdmin:  true,
 		}
+
+		err = newUser.Create()
+		if err != nil {
+			return err
+		}
+
 	}
 
+	return nil
 }
