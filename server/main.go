@@ -1,11 +1,13 @@
 package main
 
 import (
-	db "Notes/server/db"
 	"fmt"
-	"github.com/gorilla/mux"
 	"log"
 	"net/http"
+
+	"./db"
+
+	"github.com/gorilla/mux"
 )
 
 type bytes []byte
