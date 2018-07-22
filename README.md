@@ -7,7 +7,7 @@
 ``` bash
 # install dependencies
 # !!! for dev front-end u need run server with dev
-# use docker-compose up
+docker-compose up
 
 npm install
 
