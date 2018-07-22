@@ -42,7 +42,8 @@ export default {
       let self = this
       let sending = {
         ...self.form,
-        user_id: this.$store.getters.getUserId
+        user_id: this.$store.getters.getUserId,
+        created_at: this.moment(Date.now())
       }
       let result = await this.$api.send('post', '/notes', sending)
 

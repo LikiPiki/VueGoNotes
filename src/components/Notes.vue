@@ -17,6 +17,7 @@
                   @click="deleteNote(note.id)"
                 )
                   span(aria-hidden="true") &times;
+            p(slot="footer") {{formatDate(note.created_at)}}
             p.card-text {{note.content}}
       .row(v-else)
         .content.mx-auto
@@ -46,6 +47,10 @@ export default {
     }
   },
   methods: {
+    formatDate (date) {
+      console.log(this.moment(date).format('hh:mm DD:MM:YYYY'))
+      return this.moment(date).format('hh:mm DD:MM:YYYY')
+    },
     async deleteNote (id) {
       let result = await this.$api.send('delete', '/notes/' + id)
       if (result.data.status === 'success') {

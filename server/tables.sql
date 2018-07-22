@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS notes (
     user_id INTEGER NOT NULL,
     title TEXT NOT NULL,
     content TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW()
 
     FOREIGN KEY (user_id) REFERENCES users (id)
 );
