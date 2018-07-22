@@ -1,19 +1,12 @@
-package main
+package routes
 
 import (
 	"encoding/json"
 	"io/ioutil"
 	"log"
 	"net/http"
-
-	"./db"
-
-	"github.com/gorilla/mux"
+	"projects/Notes/server/db"
 )
-
-func initRoutes(r *mux.Router) {
-	r.HandleFunc("/login", Login).Methods("POST")
-}
 
 func Login(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
@@ -51,27 +44,4 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		"id":       user.Id,
 	})
 
-}
-
-/*
- *  Utils
- */
-
-func returnErrStatus(w http.ResponseWriter, errorString string) {
-	err := json.NewEncoder(w).Encode(map[string]interface{}{
-		"status": "error",
-		"error":  errorString,
-	})
-	if err != nil {
-		log.Println("Cant encode error response", err)
-	}
-}
-
-func returnLoginFailed(w http.ResponseWriter) {
-	err := json.NewEncoder(w).Encode(map[string]interface{}{
-		"login": "failed",
-	})
-	if err != nil {
-		log.Println("Cant encode error response", err)
-	}
 }

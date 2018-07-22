@@ -1,9 +1,9 @@
 package db
 
 import (
-	"log"
-
 	"database/sql"
+	"log"
+	"projects/Notes/server/crypt"
 
 	_ "github.com/lib/pq"
 )
@@ -12,6 +12,7 @@ var (
 	DB *sql.DB
 )
 
+// Connect to postgres database
 func Connect() (db *sql.DB) {
 	var err error
 
@@ -38,7 +39,7 @@ func chechFirstConnect() {
 	).Scan(&id)
 
 	if id == 0 {
-		pass, _ := CryptPassword("admin")
+		pass, _ := crypt.CryptPassword("admin")
 		_, err = DB.Query(
 			"INSERT INTO users (username, password, is_admin) VALUES ($1, $2, $3)",
 			"admin", pass, true,

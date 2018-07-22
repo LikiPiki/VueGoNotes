@@ -1,11 +1,11 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
-	"./db"
+	"projects/Notes/server/db"
+	"projects/Notes/server/routes"
 
 	"github.com/gorilla/mux"
 )
@@ -20,11 +20,11 @@ func main() {
 
 	// routes
 	r := mux.NewRouter().StrictSlash(true)
-	initRoutes(r)
+	routes.InitRoutes(r)
 
 	http.Handle("/", r)
 
-	fmt.Println("Listen and Serve on :3000")
+	log.Println("Listen and Serve on :3000")
 	err = http.ListenAndServe(":3000", nil)
 	if err != nil {
 		log.Println("Cant run web-server")

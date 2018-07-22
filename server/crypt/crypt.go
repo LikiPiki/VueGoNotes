@@ -1,4 +1,4 @@
-package db
+package crypt
 
 import "golang.org/x/crypto/bcrypt"
 
