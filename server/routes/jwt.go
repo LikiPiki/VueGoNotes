@@ -1,9 +1,10 @@
-package main
+package routes
 
 import (
+	"time"
+
 	"github.com/auth0/go-jwt-middleware"
 	"github.com/dgrijalva/jwt-go"
-	"time"
 )
 
 type JwtUser struct {

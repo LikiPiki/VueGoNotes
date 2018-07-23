@@ -1,6 +1,6 @@
 package db
 
-import "fmt"
+import "github.com/likipiki/VueGoNotes/server/crypt"
 
 type User struct {
 	Id uint `sql:"id,pk" json:"id"`
@@ -14,7 +14,7 @@ type Users []User
 func (u User) GetAll() (Users, error) {
 
 	rows, err := DB.Query(
-	  "SELECT id, username, password, is_admin FROM users",
+		"SELECT id, username, password, is_admin FROM users",
 	)
 
 	if err != nil {
@@ -46,23 +46,37 @@ func (u User) GetAll() (Users, error) {
 }
 
 func (user User) GetUserByUsername(username string) (User, error) {
-  fmt.Println("finding", username)
-  err := DB.QueryRow(
-    "SELECT id, username, password, is_admin FROM users WHERE username = $1",
-    username,
-  ).Scan(
-    &user.Id,
-    &user.Username,
-    &user.Password,
-    &user.IsAdmin,
-  )
 
-  if err != nil {
-    return User{}, err
-  }
+	err := DB.QueryRow(
+		"SELECT id, username, password, is_admin FROM users WHERE username = $1",
+		username,
+	).Scan(
+		&user.Id,
+		&user.Username,
+		&user.Password,
+		&user.IsAdmin,
+	)
 
-  fmt.Println(user)
+	if err != nil {
+		return User{}, err
+	}
 
-  return user, nil
+	return user, nil
 
+}
+
+func (user User) Create() error {
+	cryptPassword, err := crypt.CryptPassword(user.Password)
+
+	if err != nil {
+		return err
+	}
+	_, err = DB.Query(
+		"INSERT INTO users (username, password, is_admin) VALUES ($1, $2, $3)",
+		user.Username, cryptPassword, user.IsAdmin,
+	)
+	if err != nil {
+		return err
+	}
+	return nil
 }

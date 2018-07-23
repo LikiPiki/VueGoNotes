@@ -8,7 +8,7 @@
     .form-group
       input.form-control(type="text" placeholder="Reg code" v-model="regcode")
     .btn-group.center-block
-      .btn.btn-success Register
+      .btn.btn-success(@click="register") Register
       router-link.btn.btn-primary(to="/" tag="div") Login
 </template>
 
@@ -20,6 +20,16 @@ export default {
       username: '',
       password: '',
       regcode: ''
+    }
+  },
+  methods: {
+    async register () {
+      if (this.regcode === 'whitecat') {
+        await this.$api.send('post', '/register', {
+          username: this.username,
+          password: this.password
+        })
+      }
     }
   }
 }

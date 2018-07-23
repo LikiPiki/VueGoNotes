@@ -29,8 +29,7 @@ export default {
       })
 
       console.log('status', result)
-      if (result.status === 200) {
-        console.log('res', result)
+      if (result.status === 200 && result.data.status === 'success') {
         this.$store.dispatch('setToken', result.data.token)
         this.$store.dispatch('setUserId', result.data.id)
 

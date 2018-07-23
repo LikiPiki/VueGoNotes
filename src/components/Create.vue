@@ -42,9 +42,10 @@ export default {
       let self = this
       let sending = {
         ...self.form,
-        user: this.$store.getters.getUserId
+        user_id: this.$store.getters.getUserId,
+        created_at: this.moment(Date.now())
       }
-      let result = await this.$api.send('post', '/createNote', sending)
+      let result = await this.$api.send('post', '/notes', sending)
 
       if (result.status === 200) {
         this.alert.text = 'Сохранено успешно'

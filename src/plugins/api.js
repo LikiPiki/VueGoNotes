@@ -1,9 +1,11 @@
 import axios from 'axios'
+import moment from 'moment'
 
 const Api = {}
 const api = '/api'
 
 Api.install = (Vue, {store}) => {
+  Vue.prototype.moment = moment
   Vue.prototype.$api = {
 
     saveNote (note) {

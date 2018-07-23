@@ -8,9 +8,16 @@
       .row(v-if="filteredNotes.length > 0")
         .col-sm-12
           b-card.mt-2(
-            v-for="(note, index) in filteredNotes",
-            :header="note.title"
+            v-for="(note, index) in filteredNotes"
           )
+            span(slot="header")
+              p {{note.title}}
+                button.close(
+                  aria-label="Удалить"
+                  @click="deleteNote(note.id)"
+                )
+                  span(aria-hidden="true") &times;
+            p(slot="footer") {{formatDate(note.created_at)}}
             p.card-text {{note.content}}
       .row(v-else)
         .content.mx-auto
@@ -39,16 +46,30 @@ export default {
       })
     }
   },
+  methods: {
+    formatDate (date) {
+      console.log(this.moment(date).format('hh:mm DD:MM:YYYY'))
+      return this.moment(date).format('hh:mm DD:MM:YYYY')
+    },
+    async deleteNote (id) {
+      let result = await this.$api.send('delete', '/notes/' + id)
+      if (result.data.status === 'success') {
+        this.update()
+      }
+    },
+    async update () {
+      let id = await this.$store.getters.getUserId
+      let result = await this.$api.send('get', '/notes/' + id)
+      if (result) {
+        this.notes = result.data.notes
+      } else {
+        this.$router.push('/')
+      }
+    }
+  },
   async mounted () {
     this.loading = true
-    let id = await this.$store.getters.getUserId
-    let result = await this.$api.send('get', '/getNotes/' + id)
-
-    if (result) {
-      this.notes = result.data
-    } else {
-      this.$router.push('/')
-    }
+    await this.update()
     this.loading = false
   }
 }

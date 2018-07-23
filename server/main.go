@@ -1,11 +1,13 @@
 package main
 
 import (
-	db "Notes/server/db"
-	"fmt"
-	"github.com/gorilla/mux"
 	"log"
 	"net/http"
+
+	"github.com/likipiki/VueGoNotes/server/db"
+	"github.com/likipiki/VueGoNotes/server/routes"
+
+	"github.com/gorilla/mux"
 )
 
 type bytes []byte
@@ -18,11 +20,11 @@ func main() {
 
 	// routes
 	r := mux.NewRouter().StrictSlash(true)
-	initRoutes(r)
+	routes.InitRoutes(r)
 
 	http.Handle("/", r)
 
-	fmt.Println("Listen and Serve on :3000")
+	log.Println("Listen and Serve on :3000")
 	err = http.ListenAndServe(":3000", nil)
 	if err != nil {
 		log.Println("Cant run web-server")
