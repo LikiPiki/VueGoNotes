@@ -65,3 +65,22 @@ func RemoveNote(w http.ResponseWriter, r *http.Request) {
 	})
 
 }
+
+func GetOneNote(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+	note_id := vars["note_id"]
+
+	note, err := db.Note{}.GetNoteById(id, note_id)
+	if err != nil {
+		log.Println("err is ", err)
+		returnLoginFailed(w)
+		return
+	}
+
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"success": "success",
+		"note":    note,
+	})
+
+}

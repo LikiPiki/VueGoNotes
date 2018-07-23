@@ -43,6 +43,26 @@ func (note Note) GetAll(id string) (Notes, error) {
 	return notes, nil
 }
 
+func (note Note) GetNoteById(id string, user_id string) (Note, error) {
+	err := DB.QueryRow(
+		"SELECT id, user_id, title, content, created_at FROM notes WHERE (user_id = $1 AND id = $2)",
+		user_id,
+		id,
+	).Scan(
+		&note.ID,
+		&note.UserID,
+		&note.Title,
+		&note.Content,
+		&note.CreatedAt,
+	)
+
+	if err != nil {
+		return Note{}, err
+	}
+
+	return note, nil
+}
+
 func (note Note) Create(newNote Note) (bool, error) {
 	_, err := DB.Query(
 		"INSERT INTO notes(user_id, title, content, created_at) VALUES ($1, $2, $3, $4)",

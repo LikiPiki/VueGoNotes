@@ -19,6 +19,7 @@ func InitRoutes(r *mux.Router) {
 // JWT private routes
 func JWTRoutes(r *mux.Router) {
 	// notes handlers
+	r.Handle("/notes/{id}/{note_id}", jwtMiddleware.Handler(http.HandlerFunc(GetOneNote))).Methods("GET")
 	r.Handle("/notes/{id}", jwtMiddleware.Handler(http.HandlerFunc(GetAllNotes))).Methods("GET")
 	r.Handle("/notes/{id}", jwtMiddleware.Handler(http.HandlerFunc(RemoveNote))).Methods("DELETE")
 	r.Handle("/notes", jwtMiddleware.Handler(http.HandlerFunc(CreateNote))).Methods("POST")

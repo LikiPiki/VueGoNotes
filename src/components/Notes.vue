@@ -1,14 +1,13 @@
 <template lang="pug">
   .container
-    .loader(v-if="loading")
-      icon.green(name="sync" spin scale="2")
-    .content(v-else)
+    Loader(:loading="loading")
       .form-group
         input.form-control(type="text" v-model="search" placeholder="Поищем?//!?...")
       .row(v-if="filteredNotes.length > 0")
         .col-sm-12
           b-card.mt-2(
             v-for="(note, index) in filteredNotes"
+            :key="index"
           )
             span(slot="header")
               p {{note.title}}
@@ -19,15 +18,17 @@
                   span(aria-hidden="true") &times;
             p(slot="footer") {{formatDate(note.created_at)}}
             p.card-text {{note.content}}
-      .row(v-else)
-        .content.mx-auto
-          h4.mx-auto Ничего не найдено :/
-        .wrapper
-          .loader
-            icon.green(name="search" scale="2")
+            .button-group
+              router-link.btn.btn-success.btn-sm(:to="'/edit/' + note.id" tag="div") Edit
+      Banner(v-else text="Ничего не найдено :/ ..." icon="search")
+    br
+    br
 </template>
 
 <script>
+import Loader from '@/components/Utils/Loader'
+import Banner from '@/components/Utils/Banner'
+
 export default {
   name: 'notes',
   data: () => {
@@ -71,36 +72,9 @@ export default {
     this.loading = true
     await this.update()
     this.loading = false
+  },
+  components: {
+    Loader, Banner
   }
 }
 </script>
-
-<style scoped>
-  .loader {
-    width: 70px;
-    height: 70px;
-    background-color: #f8f9fa;
-    border-radius: 50%;
-    display: block;
-    position: relative;
-    margin: 10px auto;
-  }
-  .logo {
-    display: block;
-    width: 100%;
-    margin: 10px auto;
-    text-align: center;
-  }
-  .loader .fa-icon {
-    display: block;
-    position: absolute;
-    top: 19px;
-    left: 19px;
-  }
-  .wrapper {
-    width: 100%;
-  }
-  .green {
-    color: #41b883;
-  }
-</style>
