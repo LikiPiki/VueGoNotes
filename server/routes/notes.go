@@ -3,7 +3,6 @@ package routes
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 
@@ -31,15 +30,9 @@ func GetAllNotes(w http.ResponseWriter, r *http.Request) {
 
 func CreateNote(w http.ResponseWriter, r *http.Request) {
 
-	body, err := ioutil.ReadAll(r.Body)
-
-	if err != nil {
-		returnErrStatus(w, "Cant read body")
-		return
-	}
-
 	var note db.Note
-	err = json.Unmarshal(body, &note)
+	err := json.NewDecoder(r.Body).Decode(&note)
+
 	if err != nil {
 		returnErrStatus(w, "Cant json body")
 		return

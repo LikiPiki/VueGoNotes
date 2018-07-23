@@ -6,21 +6,13 @@ import (
 
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 )
 
 func Login(w http.ResponseWriter, r *http.Request) {
-	body, err := ioutil.ReadAll(r.Body)
-
-	if err != nil {
-		returnErrStatus(w, "Cant read body")
-		return
-	}
-
 	var user db.User
-	err = json.Unmarshal(body, &user)
+	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
 		returnErrStatus(w, "Cant json body")
 		return
@@ -60,20 +52,13 @@ func Login(w http.ResponseWriter, r *http.Request) {
 }
 
 func Register(w http.ResponseWriter, r *http.Request) {
-	body, err := ioutil.ReadAll(r.Body)
-
-	if err != nil {
-		returnErrStatus(w, "Cant read body")
-		return
-	}
-
 	var user db.User
-	err = json.Unmarshal(body, &user)
+	err := json.NewDecoder(r.Body).Decode(&user)
+
 	if err != nil {
 		returnErrStatus(w, "Cant json body")
 		return
 	}
-	fmt.Println("Creating", user)
 
 	err = db.User{
 		Username: user.Username,
