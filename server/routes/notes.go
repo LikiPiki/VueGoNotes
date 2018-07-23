@@ -9,7 +9,7 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"Notes/server/db"
+	"github.com/likipiki/VueGoNotes/server/db"
 )
 
 func GetAllNotes(w http.ResponseWriter, r *http.Request) {

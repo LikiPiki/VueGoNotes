@@ -1,6 +1,6 @@
 package db
 
-import "Notes/server/crypt"
+import "github.com/likipiki/VueGoNotes/server/crypt"
 
 type User struct {
 	Id uint `sql:"id,pk" json:"id"`

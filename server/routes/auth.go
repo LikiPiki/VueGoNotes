@@ -1,8 +1,9 @@
 package routes
 
 import (
-	"Notes/server/crypt"
-	"Notes/server/db"
+	"github.com/likipiki/VueGoNotes/server/crypt"
+	"github.com/likipiki/VueGoNotes/server/db"
+
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
