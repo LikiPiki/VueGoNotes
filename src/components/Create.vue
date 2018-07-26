@@ -3,7 +3,7 @@
     .form-group
         input.form-control(type="text" v-model="form.title" placeholder="Заголовок")
     .form-group
-        textarea.form-control(v-model="form.content" rows="10" placeholder="Ну что, пиши заметку раз захотел...")
+        textarea.form-control(v-model="form.content" rows="10" placeholder="Ну что, пиши заметку, раз захотел...")
     .form-inline
       .form-group
         b-dropdown.m-2(variant="primary" text="Выбери цвет")

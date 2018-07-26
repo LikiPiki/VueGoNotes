@@ -49,7 +49,6 @@ export default {
   },
   methods: {
     formatDate (date) {
-      console.log(this.moment(date).format('hh:mm DD:MM:YYYY'))
       return this.moment(date).format('hh:mm DD:MM:YYYY')
     },
     async deleteNote (id) {
@@ -70,7 +69,13 @@ export default {
   },
   async mounted () {
     this.loading = true
-    await this.update()
+    try {
+      await this.update()
+    } catch (err) {
+      console.log(err)
+      this.$store.dispatch('setToken', '')
+      this.$router.push('/login')
+    }
     this.loading = false
   },
   components: {

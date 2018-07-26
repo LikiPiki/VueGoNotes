@@ -1,0 +1,12 @@
+
+$theme-colors: (
+    "primary": #2A9D8F,
+    "success": #264653,
+    "secondary": #E9C46A,
+    "warning": #F4A261,
+    "danger": #E76F51
+);
+
+// ovveride styles here
+// custom scss bootstrap theme
+@import 'bootstrap/scss/bootstrap.scss'

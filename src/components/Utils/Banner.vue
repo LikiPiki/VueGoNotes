@@ -29,7 +29,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
   .loader {
     width: 70px;
     height: 70px;

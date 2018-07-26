@@ -12,15 +12,16 @@ import Icon from 'vue-awesome/components/Icon'
 import 'vue-awesome/icons/sync'
 import 'vue-awesome/icons/search'
 
-// globally (in your main .js file)
-
-import 'bootstrap/dist/css/bootstrap.css'
+// custom bootstrap theme color
+import './assets/scss/theme.scss'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 import 'animate.css/animate.min.css'
 
 Vue.config.productionTip = false
 
+// @TODO create utils mixin for date
+// and state mixin for TOKEN, state, bla, bla bla....
 Vue.use(Api, {store})
 
 Vue.use(BootstrapVue)
