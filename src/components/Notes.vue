@@ -74,7 +74,7 @@ export default {
     } catch (err) {
       console.log(err)
       this.$store.dispatch('setToken', '')
-      this.$router.push('/login')
+      this.$router.push('/')
     }
     this.loading = false
   },

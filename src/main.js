@@ -5,9 +5,12 @@ import App from './App'
 import router from './router'
 
 import Api from './plugins/api'
+
 import store from './store/index'
 
 import BootstrapVue from 'bootstrap-vue'
+import Vuelidate from 'vuelidate'
+
 import Icon from 'vue-awesome/components/Icon'
 import 'vue-awesome/icons/sync'
 import 'vue-awesome/icons/search'
@@ -22,9 +25,12 @@ Vue.config.productionTip = false
 
 // @TODO create utils mixin for date
 // and state mixin for TOKEN, state, bla, bla bla....
-Vue.use(Api, {store})
 
 Vue.use(BootstrapVue)
+Vue.use(Vuelidate)
+
+Vue.use(Api, {store})
+
 Vue.component('icon', Icon)
 
 /* eslint-disable no-new */

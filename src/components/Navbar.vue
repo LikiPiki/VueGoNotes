@@ -20,9 +20,9 @@ export default {
   methods: {
     logout () {
       this.$store.dispatch('setToken', '')
-      sessionStorage.clear('token')
-      sessionStorage.clear('user')
-      sessionStorage.clear('id')
+      localStorage.clear('token')
+      localStorage.clear('user')
+      localStorage.clear('id')
       this.$router.push('/')
     }
   }

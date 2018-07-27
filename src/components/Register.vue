@@ -7,9 +7,9 @@
       input.form-control(type="password" placeholder="password" v-model="password")
     .form-group
       input.form-control(type="text" placeholder="Reg code" v-model="regcode")
-    .btn-group.center-block
-      .btn.btn-success(@click="register") Register
-      router-link.btn.btn-primary(to="/" tag="div") Login
+    .btn-group.float-right
+      router-link.btn.btn-success(to="/" tag="div") Login
+      .btn.btn-primary(@click="register") Register
 </template>
 
 <script>
