@@ -10,7 +10,8 @@
           b-dropdown-item-button Orange
           b-dropdown-item-button Blue
           b-dropdown-item-button Green
-      .form-group
+      .form-grou
+        b-form-select()
         input.form-control(placeholder="тэги")
     .btn-group
       .btn.btn-success(@click="save") Сохранить

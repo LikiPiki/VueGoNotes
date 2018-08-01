@@ -71,6 +71,11 @@ export default {
         }
       }
     }
+  },
+  mounted () {
+    // not stable variant
+    // todo rewrite
+    this.$v.$reset()
   }
 }
 </script>

@@ -1,5 +1,6 @@
 package db
 
+//easyjson:json -snake_case
 type Tag struct {
 	ID uint `json:"id"`
 

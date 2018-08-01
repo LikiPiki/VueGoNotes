@@ -6,6 +6,7 @@ import Register from '@/components/Register'
 import Notes from '@/components/Notes'
 import Create from '@/components/Create'
 import Edit from '@/components/Edit'
+import User from '@/components/User'
 
 Vue.use(Router)
 
@@ -35,6 +36,11 @@ export default new Router({
       path: '/edit/:id',
       name: 'Edit',
       component: Edit
+    },
+    {
+      path: '/user',
+      name: 'User',
+      component: User
     }
   ]
 })

@@ -14,6 +14,10 @@ import Vuelidate from 'vuelidate'
 import Icon from 'vue-awesome/components/Icon'
 import 'vue-awesome/icons/sync'
 import 'vue-awesome/icons/search'
+import 'vue-awesome/icons/user'
+import 'vue-awesome/icons/plus'
+import 'vue-awesome/icons/sign-out-alt'
+import 'vue-awesome/icons/trash-alt'
 
 // custom bootstrap theme color
 import './assets/scss/theme.scss'

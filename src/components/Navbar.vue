@@ -2,8 +2,12 @@
   nav.navbar.navabar-expand-lg.navbar-light.bg-light.mt-4
     router-link.navbar-brand(to="/notes" tag="a") Notes
     .btn-group
-      router-link.btn.btn-success(to="/create" tag="div") Create
-      .btn.btn-primary(@click="logout" v-if="visible") Logout
+      router-link.btn.btn-warning(to="/user", tag="div")
+        icon(name="user")
+      router-link.btn.btn-success(to="/create" tag="div")
+        icon(name="plus")
+      .btn.btn-primary(@click="logout" v-if="visible")
+        icon(name="sign-out-alt")
 </template>
 
 <script>

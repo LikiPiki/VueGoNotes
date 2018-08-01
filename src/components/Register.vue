@@ -31,6 +31,9 @@ export default {
         })
       }
     }
+  },
+  mounted () {
+    this.$v.$reset()
   }
 }
 </script>
