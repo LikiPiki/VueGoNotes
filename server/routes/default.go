@@ -23,8 +23,9 @@ func defaultRoutes(r *mux.Router) {
 // JWT private routes
 func JWTRoutes(r *mux.Router) {
 	// default handlers
-	r.Handle("/tags", jwtMiddleware.Handler(http.HandlerFunc(GetAllTags))).Methods("GET")
 	r.Handle("/tags", jwtMiddleware.Handler(http.HandlerFunc(CreateTag))).Methods("POST")
+	// r.Handle("/tags/{id}", jwtMiddleware.Handler(http.HandlerFunc())).Methods("PUT")
+	r.Handle("/tags", jwtMiddleware.Handler(http.HandlerFunc(GetAllTags))).Methods("GET")
 	// notes handlers
 	r.Handle("/note/{id}", jwtMiddleware.Handler(http.HandlerFunc(GetOneNote))).Methods("GET")
 	r.Handle("/notes/{id}", jwtMiddleware.Handler(http.HandlerFunc(GetAllNotes))).Methods("GET")

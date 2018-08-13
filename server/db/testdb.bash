@@ -1,5 +1,8 @@
--- if change schema rebild docker compose
+psql test_notes -c "drop table users cascade;"
+psql test_notes -c "drop table notes;"
+psql test_notes -c "drop table tags;"
 
+psql test_notes -c "
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     username TEXT UNIQUE NOT NULL,
@@ -23,3 +26,4 @@ CREATE TABLE IF NOT EXISTS tags (
     tag_name TEXT NOT NULL,
     color TEXT NOT NULL
 );
+"

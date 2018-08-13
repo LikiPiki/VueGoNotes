@@ -12,10 +12,10 @@ var (
 )
 
 // Connect to postgres database
-func Connect() (db *sql.DB) {
+func Connect(name string) (db *sql.DB) {
 	var err error
 
-	connStr := "password='postgres' dbname=notes sslmode=disable"
+	connStr := "password='postgres' dbname=" + name + " sslmode=disable"
 	DB, err = sql.Open("postgres", connStr)
 
 	if err != nil {

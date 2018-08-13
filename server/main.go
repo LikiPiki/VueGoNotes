@@ -15,7 +15,7 @@ type bytes []byte
 func main() {
 	var err error
 
-	database := db.Connect()
+	database := db.Connect("notes")
 	defer database.Close()
 
 	// routes
@@ -27,7 +27,7 @@ func main() {
 	log.Println("Listen and Serve on :3000")
 	err = http.ListenAndServe(":3000", nil)
 	if err != nil {
-		log.Println("Cant run web-server")
+		log.Println("Cant run web-server", err)
 	}
 
 }

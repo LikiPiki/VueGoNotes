@@ -67,7 +67,7 @@ func (note Note) GetNoteById(id string, user_id string) (Note, error) {
 
 func (note Note) Create() error {
 	_, err := DB.Query(
-		"INSERT INTO notes(user_id, title, content, created_at) VALUES ($1, $2, $3, $4)",
+		"INSERT INTO notes (user_id, title, content, created_at) VALUES ($1, $2, $3, $4)",
 		&note.UserID,
 		&note.Title,
 		&note.Content,
