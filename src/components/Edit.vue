@@ -38,8 +38,7 @@ export default {
     this.loading = true
     let id = this.$route.params.id
     if (id.match(/\d+/)) {
-      let userId = await this.$store.getters.getUserId
-      let result = await this.$api.send('get', `notes/${id}/${userId}`)
+      let result = await this.$api.send('get', `/note/${id}`)
       if (result) {
         console.log(result)
         let note = result.data.note

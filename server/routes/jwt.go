@@ -24,10 +24,6 @@ func createToken(username string) (string, error) {
 	return tokenStr, err
 }
 
-func checkTokenValid(token string) (bool, error) {
-	return false, nil
-}
-
 var jwtMiddleware = jwtmiddleware.New(jwtmiddleware.Options{
 	ValidationKeyGetter: func(token *jwt.Token) (interface{}, error) {
 		return []byte("secret"), nil

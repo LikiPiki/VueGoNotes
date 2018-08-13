@@ -40,8 +40,8 @@ func CreateNote(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("note is ", note)
 
 	var result bool
-	result, err = db.Note{}.Create(note)
-	log.Println("result is, ", err)
+	err = note.Create()
+
 	if err != nil {
 		returnErrStatus(w, "Cant create note")
 	}
@@ -69,9 +69,14 @@ func RemoveNote(w http.ResponseWriter, r *http.Request) {
 func GetOneNote(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
-	note_id := vars["note_id"]
+	noteId := r.Header.Get("user_id")
 
-	note, err := db.Note{}.GetNoteById(id, note_id)
+	if noteId == "" {
+		returnLoginFailed(w)
+		return
+	}
+
+	note, err := db.Note{}.GetNoteById(id, noteId)
 	if err != nil {
 		log.Println("err is ", err)
 		returnLoginFailed(w)

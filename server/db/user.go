@@ -62,7 +62,6 @@ func (user User) GetUserByUsername(username string) (User, error) {
 	}
 
 	return user, nil
-
 }
 
 func (user User) Create() error {

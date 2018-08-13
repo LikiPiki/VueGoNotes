@@ -1,6 +1,8 @@
 package db
 
-import "time"
+import (
+	"time"
+)
 
 type Note struct {
 	ID     uint `json:"id"`
@@ -63,20 +65,20 @@ func (note Note) GetNoteById(id string, user_id string) (Note, error) {
 	return note, nil
 }
 
-func (note Note) Create(newNote Note) (bool, error) {
+func (note Note) Create() error {
 	_, err := DB.Query(
 		"INSERT INTO notes(user_id, title, content, created_at) VALUES ($1, $2, $3, $4)",
-		&newNote.UserID,
-		&newNote.Title,
-		&newNote.Content,
-		&newNote.CreatedAt,
+		&note.UserID,
+		&note.Title,
+		&note.Content,
+		&note.CreatedAt,
 	)
 
 	if err != nil {
-		return false, err
+		return err
 	}
 
-	return true, nil
+	return nil
 }
 
 func (note Note) RemoveNote(id string) error {

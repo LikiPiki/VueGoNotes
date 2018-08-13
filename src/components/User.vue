@@ -8,6 +8,7 @@
             b-list-group
               b-list-group-item.d-flex.justify-content-between.align-items-center(
                 v-for="(tag, index) in tab1.tags"
+                :key="index"
               )
                 | {{tag}}
                 b-badge(variant="primary" pill) 2

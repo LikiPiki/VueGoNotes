@@ -18,7 +18,8 @@ Api.install = (Vue, {store}) => {
 
     send: async (type, path, data) => {
       let headers = {
-        'Authorization': 'bearer ' + store.getters.getToken
+        'Authorization': 'bearer ' + store.getters.getToken,
+        'user_id': store.getters.getUserId
       }
 
       let result = {}
@@ -31,6 +32,10 @@ Api.install = (Vue, {store}) => {
 
         if (result.status !== 200) {
           result = {'error': true}
+        } else {
+          if (result.data.message) {
+            console.log('send with message')
+          }
         }
       } catch (err) {
         result = {'error': true}
